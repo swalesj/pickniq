@@ -85,8 +85,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            // Signed in successfully, show authenticated UI.
-            updateUI(mAuth.getCurrentUser());
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
             Log.w(TAG, "signInResult:failed code=" + e.getStatusCode());
@@ -120,8 +118,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                             Snackbar.make(findViewById(R.id.sign_in_button), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             updateUI(null);
                         }
-
-                        // ...
                     }
                 });
     }
