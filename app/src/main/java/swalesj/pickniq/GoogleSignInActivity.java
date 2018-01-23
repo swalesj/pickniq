@@ -35,6 +35,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private View mLoginFormView;
+    private GoogleSignInAccount account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +58,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
             signIn();
         }
     }
+    protected void onStart() {
+        super.onStart();
+        account = GoogleSignIn.getLastSignedInAccount(this);
+        updateUI(account);
+    }
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -76,7 +82,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     }
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            account = completedTask.getResult(ApiException.class);
 
             // Signed in successfully, show authenticated UI.
             updateUI(account);
