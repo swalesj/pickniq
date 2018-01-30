@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "1055333847030",
+    "firebase_url": "https://pickniq-23dca.firebaseio.com",
+    "project_id": "pickniq-23dca",
+    "storage_bucket": "pickniq-23dca.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055333847030:android:160eef5747286ca3",
+        "android_client_info": {
+          "package_name": "swalesj.pickniq"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1055333847030-qcbrp255enpqihgj9v0ehhb5hmmhh3vc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "swalesj.pickniq",
+            "certificate_hash": "2e7996ad92e442fdbaa5fc795e3337ad3541578f"
+          }
+        },
+        {
+          "client_id": "1055333847030-5nk4e8nkpkpkjhpmmri2r9ssgkctphq7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQE86eAF8UylrcBwy7WQtJLDSUjQAaJLc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1055333847030-5nk4e8nkpkpkjhpmmri2r9ssgkctphq7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
