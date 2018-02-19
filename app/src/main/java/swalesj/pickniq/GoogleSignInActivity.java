@@ -14,12 +14,18 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A login screen that offers login via Google. */
 public class GoogleSignInActivity extends AppCompatActivity implements View.OnClickListener {
@@ -112,6 +118,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(mAuth.getCurrentUser());
+                            registerUser(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -121,5 +128,33 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
     }
+
+    public void registerUser(FirebaseUser user) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        if (user != null) {
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("name", user.getDisplayName());
+            userData.put("email", user.getEmail());
+            String uid = user.getUid();
+
+            db.collection("Users").document(uid).set(userData)
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            System.out.println("SUCCESS");
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    System.out.println("FAILURE");
+                }
+            });
+        } else {
+            // TODO.
+            // No authenticated user? Makes no sense.. We shouldn't be
+            // starting main activity if this is the case.
+        }
+    }
+
 }
 
