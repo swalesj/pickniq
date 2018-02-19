@@ -7,6 +7,7 @@
 /build
 /captures
 .externalNativeBuild
+
 ### https://raw.github.com/github/gitignore/22a5eb3da72c0a224a179033e92722bdbf5a05ad/Android.gitignore
 
 # Built application files
@@ -59,7 +60,7 @@ captures/
 .externalNativeBuild
 
 # Google Services (e.g. APIs or Firebase)
-google-services.json
+#google-services.json
 
 # Freeline
 freeline.py
