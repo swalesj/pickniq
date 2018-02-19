@@ -101,7 +101,6 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     private void updateUI(FirebaseUser account) {
         Intent main = new Intent(this, MainActivity.class);
         if (account != null) {
-            registerUser();
             startActivity(main);
         }
     }
@@ -119,6 +118,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
                             updateUI(mAuth.getCurrentUser());
+                            registerUser(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -129,9 +129,8 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                 });
     }
 
-    public void registerUser() {
+    public void registerUser(FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
             Map<String, Object> userData = new HashMap<>();
             userData.put("name", user.getDisplayName());
