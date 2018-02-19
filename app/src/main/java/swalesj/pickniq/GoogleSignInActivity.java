@@ -31,6 +31,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("HERE");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
