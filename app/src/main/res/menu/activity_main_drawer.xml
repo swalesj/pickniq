@@ -3,20 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <group android:checkableBehavior="single">
-        <item
-            android:id="@+id/nav_gallery"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Gallery" />
-        <item
-            android:id="@+id/nav_slideshow"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Slideshow" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
-    </group>
+    <item android:title="Profile">
+        <menu>
+            <item
+                android:id="@+id/nav_prefs"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="Preferences" />
+            <item
+                android:id="@+id/nav_recommended"
+                android:icon="@android:drawable/ic_input_get"
+                android:title="Recommended Near You" />
+        </menu>
+    </item>
 
     <item android:title="Communicate">
         <menu>
@@ -25,9 +23,9 @@
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/nav_invite"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="Invite" />
         </menu>
     </item>
 
