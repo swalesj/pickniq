@@ -22,6 +22,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -128,11 +130,36 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     /**
      * Update UI.
      */
-    private void updateUI(FirebaseUser account) {
-        Intent main = new Intent(this, MainActivity.class);
-        if (account != null) {
-            startActivity(main);
-        }
+    private void updateUI(final FirebaseUser u) {
+        if (u == null) return;
+
+        // Intents. TODO: Implement activity for getting user preferences.
+        final Intent main = new Intent(this, MainActivity.class);
+
+        // Firestore checking to see if user already exists.
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference dRef = db.collection("Users").document(u.getUid());
+        dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            public void onComplete(Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
+                        startActivity(main);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        User newUser = new User(u);
+                        newUser.register();
+
+                        // Placeholder so that app is still functional.
+                        // TODO: Send to 'Get Preferences' activity for new users.
+                        startActivity(main);
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
 
@@ -151,21 +178,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            User newUser = new User(user);
-
-                            // TODO: Different activities if user already exists?
-                            // TODO: Must wait for check before continuing. Get data util?
-                            // Check to see if user exists.
-                            if (newUser.checkUserExists()) {
-                                updateUI(mAuth.getCurrentUser());
-                            } else {
-                                Log.d(TAG, "NOT REGISTERED");
-                                newUser.register();
-
-                                // Placeholder so that app is still functional.
-                                // TODO: Send to 'Get Preferences' activity for new users.
-                                updateUI(mAuth.getCurrentUser());
-                            }
+                            updateUI(user);
 
                         } else {
                             // If sign in fails, display a message to the user.
