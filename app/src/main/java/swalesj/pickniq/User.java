@@ -68,10 +68,10 @@ public class User {
         this.uid = uid;
     }
 
-    // Is registered?
+    // Is registered to Firestore?
     public boolean isRegistered() { return registered; }
 
-    // Register.
+    // Register user to Firestore.
     public void register() {
         if (userExists()) return;
 
@@ -95,7 +95,8 @@ public class User {
         });
     }
 
-    // User exists.
+    // User exists in Firestore DB?
+    // Update 'registered' field if necessary.
     private boolean userExists() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference dRef = db.collection("Users").document(uid);
@@ -108,6 +109,7 @@ public class User {
                         registered = true;
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
                     } else {
+                        registered = false;
                         Log.d(TAG, "No such document");
                     }
                 } else {

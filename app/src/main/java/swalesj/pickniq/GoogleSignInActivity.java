@@ -129,38 +129,5 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                     }
                 });
     }
-
-    /*public void registerUser(FirebaseUser user) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        if (user != null) {
-            Map<String, Object> userData = new HashMap<>();
-            userData.put("name", user.getDisplayName());
-            userData.put("email", user.getEmail());
-            userData.put("phoneNumber", user.getPhoneNumber());
-            String uid = user.getUid();
-
-            db.collection("Users").document(uid).set(userData)
-                    .addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            String success = "Successfully register user with Firestore DB.";
-                            Log.d(TAG, success);
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    String error = "Failed to register user with Firestore DB.";
-                    System.out.println("");
-                }
-            });
-        } else {
-            // TODO.
-            // No authenticated user? Makes no sense.. We shouldn't be
-            // starting main activity if this is the case.
-            String error = "No User to register with Firestore DB.";
-            Log.d(TAG, error);
-        }
-    }*/
-
 }
 
