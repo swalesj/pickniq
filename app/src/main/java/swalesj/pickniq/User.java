@@ -41,7 +41,12 @@ public class User {
         uid = u.getUid();
         name = u.getDisplayName();
         email = u.getEmail();
-        registered = false;
+
+        // Below lines were an idea for allowing user object to register itself to Firestore DB..
+        // Doesn't grab data fast enough.
+        // This may require some app-wide utilities for getting data and waiting for said data.
+        // registered = checkUserExists();
+        // if (!isRegistered()) register();
     }
 
 
@@ -73,7 +78,7 @@ public class User {
 
     // Register user to Firestore.
     public void register() {
-        if (userExists()) return;
+        if (checkUserExists()) return;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = getUid();
@@ -95,13 +100,12 @@ public class User {
         });
     }
 
-    // User exists in Firestore DB?
+    // Check if user exists in Firestore DB.
     // Update 'registered' field if necessary.
-    private boolean userExists() {
+    public boolean checkUserExists() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference dRef = db.collection("Users").document(uid);
         dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-            @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();

@@ -30,13 +30,17 @@ import java.util.Map;
 /** A login screen that offers login via Google. */
 public class GoogleSignInActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // Variables and finals.
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "GoogleSignInActivity";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
+    /**
+     * On create.
+     */
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -50,26 +54,43 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mAuth = FirebaseAuth.getInstance();
     }
-    @Override
-    public void onClick(View v) {
+
+
+    /**
+     * On click.
+     */
+    @Override public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.sign_in_button) {
             signIn();
         }
     }
+
+
+    /**
+     * On start.
+     */
     protected void onStart() {
         super.onStart();
         //account = GoogleSignIn.getLastSignedInAccount(this);
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
+
+
+    /**
+     * Sign in.
+     */
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    /**
+     * On activity result.
+     */
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -88,6 +109,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
+
+
+    /**
+     * Handle sign in result.
+     */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -98,6 +124,10 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+
+    /**
+     * Update UI.
+     */
     private void updateUI(FirebaseUser account) {
         Intent main = new Intent(this, MainActivity.class);
         if (account != null) {
@@ -105,6 +135,10 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
+
+    /**
+     * Firebase authentication with Google.
+     */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
@@ -117,13 +151,27 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(mAuth.getCurrentUser());
                             User newUser = new User(user);
-                            newUser.register();
+
+                            // TODO: Different activities if user already exists?
+                            // TODO: Must wait for check before continuing. Get data util?
+                            // Check to see if user exists.
+                            if (newUser.checkUserExists()) {
+                                updateUI(mAuth.getCurrentUser());
+                            } else {
+                                Log.d(TAG, "NOT REGISTERED");
+                                newUser.register();
+
+                                // Placeholder so that app is still functional.
+                                // TODO: Send to 'Get Preferences' activity for new users.
+                                updateUI(mAuth.getCurrentUser());
+                            }
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.sign_in_button), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.sign_in_button),
+                                    "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
