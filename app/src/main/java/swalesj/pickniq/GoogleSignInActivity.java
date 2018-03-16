@@ -14,23 +14,35 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /** A login screen that offers login via Google. */
 public class GoogleSignInActivity extends AppCompatActivity implements View.OnClickListener {
 
+    // Variables and finals.
     private static final int RC_SIGN_IN = 9001;
     private FirebaseAuth mAuth;
     private GoogleSignInClient mGoogleSignInClient;
     private static final String TAG = "GoogleSignInActivity";
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+
+    /**
+     * On create.
+     */
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -44,26 +56,43 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
         mAuth = FirebaseAuth.getInstance();
     }
-    @Override
-    public void onClick(View v) {
+
+
+    /**
+     * On click.
+     */
+    @Override public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.sign_in_button) {
             signIn();
         }
     }
+
+
+    /**
+     * On start.
+     */
     protected void onStart() {
         super.onStart();
         //account = GoogleSignIn.getLastSignedInAccount(this);
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
+
+
+    /**
+     * Sign in.
+     */
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+
+    /**
+     * On activity result.
+     */
+    @Override public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
@@ -82,6 +111,11 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
             }
         }
     }
+
+
+    /**
+     * Handle sign in result.
+     */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
@@ -92,13 +126,46 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         }
     }
 
-    private void updateUI(FirebaseUser account) {
-        Intent main = new Intent(this, MainActivity.class);
-        if (account != null) {
-            startActivity(main);
-        }
+
+    /**
+     * Update UI.
+     */
+    private void updateUI(final FirebaseUser u) {
+        if (u == null) return;
+
+        // Intents. TODO: Implement activity for getting user preferences.
+        final Intent main = new Intent(this, MainActivity.class);
+
+        // Firestore checking to see if user already exists.
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        DocumentReference dRef = db.collection("Users").document(u.getUid());
+        dRef.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            public void onComplete(Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    DocumentSnapshot document = task.getResult();
+                    if (document != null) {
+                        Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
+                        startActivity(main);
+                    } else {
+                        Log.d(TAG, "No such document");
+                        User newUser = new User(u);
+                        newUser.register();
+
+                        // Placeholder so that app is still functional.
+                        // TODO: Send to 'Get Preferences' activity for new users.
+                        startActivity(main);
+                    }
+                } else {
+                    Log.d(TAG, "get failed with ", task.getException());
+                }
+            }
+        });
     }
 
+
+    /**
+     * Firebase authentication with Google.
+     */
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
 
@@ -111,11 +178,13 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-                            updateUI(mAuth.getCurrentUser());
+                            updateUI(user);
+
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
-                            Snackbar.make(findViewById(R.id.sign_in_button), "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
+                            Snackbar.make(findViewById(R.id.sign_in_button),
+                                    "Authentication Failed.", Snackbar.LENGTH_SHORT).show();
                             updateUI(null);
                         }
                     }
