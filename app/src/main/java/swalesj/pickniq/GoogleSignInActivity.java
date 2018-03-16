@@ -143,7 +143,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
             public void onComplete(Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     DocumentSnapshot document = task.getResult();
-                    if (document != null) {
+                    if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
                         startActivity(main);
                     } else {
@@ -152,7 +152,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                         newUser.register();
 
                         // Placeholder so that app is still functional.
-                        // TODO: Send to 'Get Preferences' activity for new users.
+                        // TODO: Send to 'Get Preferences' activity for newsearch users.
                         startActivity(main);
                     }
                 } else {
