@@ -5,11 +5,11 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/nav_groups"
             android:icon="@drawable/folder"
             android:title="Groups" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/nav_favorites"
             android:icon="@drawable/favorite"
             android:title="Favorites" />
         <item
@@ -21,7 +21,7 @@
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/nav_prefs"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />
             <item
