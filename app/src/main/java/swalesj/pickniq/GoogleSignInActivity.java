@@ -129,10 +129,10 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
      * Update UI.
      */
     private void updateUI(final FirebaseUser u) {
-        if (u == null) return;
-
-        // Intents. TODO: Implement activity for getting user preferences.
-        final Intent main = new Intent(this, MainActivity.class);
+        if (u == null) {
+            Log.d(TAG, "No user. Must have a user to continue to next Activity.");
+            return;
+        }
 
         // Firestore checking to see if user already exists.
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -143,15 +143,10 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
-                        startActivity(main);
+                        callMainActivity();
                     } else {
                         Log.d(TAG, "No such document");
-                        User newUser = new User(u);
-                        newUser.register();
-
-                        // Placeholder so that app is still functional.
-                        // TODO: Send to 'Get Preferences' activity for newsearch users.
-                        startActivity(main);
+                        callNewUserActivity(u);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -160,6 +155,25 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
         });
     }
 
+
+    /**
+     * Call main activity.
+     */
+    private void callMainActivity() {
+        startActivity(new Intent(this, MainActivity.class));
+    }
+
+
+    /**
+     * Call new user activity.
+     */
+    private void callNewUserActivity(FirebaseUser u) {
+        User newUser = new User(u);
+        newUser.register();
+
+        // TODO: Get user preferences for new user.
+        startActivity(new Intent(this, MainActivity.class));
+    }
 
     /**
      * Firebase authentication with Google.
