@@ -152,7 +152,9 @@ public class MainActivity extends AppCompatActivity
                 .getString(R.string.maps_style)));
         mLastKnownLocation = null;
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
-        try {
+
+            getLocationPermission();
+            try {
             locationClient.getLastLocation()
                     .addOnSuccessListener(new OnSuccessListener<Location>() {
                         @Override
