@@ -3,10 +3,13 @@ package swalesj.pickniq;
 
 import android.content.Intent;
 
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
@@ -73,6 +76,7 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     protected void onStart() {
         super.onStart();
         //account = GoogleSignIn.getLastSignedInAccount(this);
+        getLocationPermission();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         updateUI(currentUser);
     }
@@ -173,6 +177,18 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
 
         // TODO: Get user preferences for new user.
         startActivity(new Intent(this, MainActivity.class));
+    }
+
+    private void getLocationPermission() {
+    /*
+     * Request location permission, so that we can get the location of the
+     * device. The result of the permission request is handled by a callback,
+     * onRequestPermissionsResult.
+     */
+            ActivityCompat.requestPermissions(this,
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                    1);
     }
 
     /**

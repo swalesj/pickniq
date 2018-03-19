@@ -133,7 +133,7 @@ public class MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         if (id == R.id.nav_groups) {
-            // TODO Open group activity too modify user groups
+            // TODO Open group activity to modify user groups
         } else if (id == R.id.nav_favorites) {
             // TODO Open saved faves
         } else if (id == R.id.nav_prefs) {
@@ -155,31 +155,33 @@ public class MainActivity extends AppCompatActivity
 
             getLocationPermission();
             try {
-            locationClient.getLastLocation()
-                    .addOnSuccessListener(new OnSuccessListener<Location>() {
-                        @Override
-                        public void onSuccess(Location location) {
-                            // GPS location can be null if GPS is switched off
-                            if (location != null) {
-                                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                                googleMap.addMarker(new MarkerOptions().position(latLng)
-                                        .title("Detected Location"));
-                                onLocationChanged(location);
-                            }
-                        }
-                    })
-                    .addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                            e.printStackTrace();
-                        }
-                    });
-        } catch (SecurityException s) {
-            //do something
+                //if (this.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
+                    locationClient.getLastLocation()
+                            .addOnSuccessListener(new OnSuccessListener<Location>() {
+                                @Override
+                                public void onSuccess(Location location) {
+                                    // GPS location can be null if GPS is switched off
+                                    if (location != null) {
+                                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
+                                        googleMap.addMarker(new MarkerOptions().position(latLng)
+                                                .title("Detected Location"));
+                                        onLocationChanged(location);
+                                    }
+                                }
+                            })
+                            .addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                                    e.printStackTrace();
+                                }
+                            });
+               // }
+            } catch (SecurityException s) {
+                //do something
+            }
         }
-    }
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
@@ -203,7 +205,8 @@ public class MainActivity extends AppCompatActivity
             mLocationPermissionGranted = true;
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
