@@ -1,5 +1,7 @@
 package swalesj.pickniq;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -9,6 +11,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -85,6 +88,27 @@ public class MainActivity extends AppCompatActivity
 
     }
 
+    public void launchPrefDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.prefs_title)
+                .setIcon(R.mipmap.ic_launcher_round)
+                .setNegativeButton(R.string.cancel_prefs, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface prefs, int id) {
+                        //User wants to close the dialog
+                        prefs.cancel();
+                    }
+                })
+                .setPositiveButton(R.string.save_prefs, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface prefs, int id) {
+                        //User wants to save preferences
+                    }
+                })
+                .setTitle(R.string.prefs_title);
+        AlertDialog prefs = builder.create();
+        prefs.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
+        prefs.show();
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -133,9 +157,9 @@ public class MainActivity extends AppCompatActivity
         if (id == R.id.nav_groups) {
             // TODO Open group activity to modify user groups
         } else if (id == R.id.nav_favorites) {
-            // TODO Open saved faves
+
         } else if (id == R.id.nav_prefs) {
-            // TODO Open/Edit prefs
+            launchPrefDialog();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -164,7 +188,7 @@ public class MainActivity extends AppCompatActivity
                                         mOps.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                                         CameraPosition camPos = new CameraPosition.Builder()
                                                 .target(latLng)
-                                                .tilt(60)
+                                                .tilt(80)
                                                 .zoom(18)
                                                 .bearing(0)
                                                 .build();

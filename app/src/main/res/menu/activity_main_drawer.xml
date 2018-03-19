@@ -13,7 +13,7 @@
             android:icon="@drawable/favorite"
             android:title="Favorites" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/nav_prefs"
             android:icon="@drawable/ic_menu_manage"
             android:title="Preferences" />
     </group>
@@ -21,13 +21,13 @@
     <item android:title="Communicate">
         <menu>
             <item
-                android:id="@+id/nav_prefs"
+                android:id="@+id/nav_share"
                 android:icon="@drawable/ic_menu_share"
                 android:title="Share" />
             <item
                 android:id="@+id/nav_send"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Send" />
+                android:title="Report a Problem" />
         </menu>
     </item>
 
