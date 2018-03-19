@@ -3,7 +3,6 @@ package swalesj.pickniq;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -29,13 +28,13 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
@@ -43,12 +42,11 @@ import static com.google.android.gms.location.LocationServices.getFusedLocationP
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
-    private FusedLocationProviderClient mFusedLocationClient;
+    private boolean mLocationPermissionGranted = false;
+    private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
-    public GoogleMap googleMap;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
     private Location mLastKnownLocation;
-    private boolean mLocationPermissionGranted;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -147,25 +145,34 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
-
-        boolean success = googleMap.setMapStyle(new MapStyleOptions(getResources()
-                .getString(R.string.maps_style)));
+        this.googleMap = googleMap;
         mLastKnownLocation = null;
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
 
             getLocationPermission();
             try {
-                //if (this.checkSelfPermission(Manifest.permission.ACCESS_NETWORK_STATE) != PackageManager.PERMISSION_GRANTED) {
                     locationClient.getLastLocation()
                             .addOnSuccessListener(new OnSuccessListener<Location>() {
                                 @Override
                                 public void onSuccess(Location location) {
                                     // GPS location can be null if GPS is switched off
                                     if (location != null) {
+                                        MarkerOptions mOps = new MarkerOptions();
+
                                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                                        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 16));
-                                        googleMap.addMarker(new MarkerOptions().position(latLng)
-                                                .title("Detected Location"));
+                                        mOps.position(latLng);
+                                        mOps.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                        CameraPosition camPos = new CameraPosition.Builder()
+                                                .target(latLng)
+                                                .tilt(60)
+                                                .zoom(18)
+                                                .bearing(0)
+                                                .build();
+                                        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                                        googleMap.setMyLocationEnabled(true);
+                                        googleMap.addMarker(mOps);
+                                        googleMap.setMapStyle(new MapStyleOptions(getResources()
+                                                .getString(R.string.maps_style)));
                                         onLocationChanged(location);
                                     }
                                 }
@@ -226,4 +233,5 @@ public class MainActivity extends AppCompatActivity
             }
         }
     }
+
 }
