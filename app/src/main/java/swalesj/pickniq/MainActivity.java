@@ -90,7 +90,26 @@ public class MainActivity extends AppCompatActivity
 
     public void launchPrefDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.prefs_title)
+
+        String[] dialog_items_price = new String[]{
+                "$",
+                "$$",
+                "$$$",
+                ">10 miles",
+                "Fast Food",
+                "Dine-in"
+        };
+        //these values will have to be pulled from Firebase later on
+        boolean[] selected_items_price = new boolean[]{
+                false, false, false, true, false, true
+        };
+
+        builder.setMultiChoiceItems(dialog_items_price, selected_items_price, new DialogInterface.OnMultiChoiceClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                        //save checked options
+                    }
+                })
                 .setIcon(R.mipmap.ic_launcher_round)
                 .setNegativeButton(R.string.cancel_prefs, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface prefs, int id) {
@@ -103,6 +122,7 @@ public class MainActivity extends AppCompatActivity
                         //User wants to save preferences
                     }
                 })
+
                 .setTitle(R.string.prefs_title);
         AlertDialog prefs = builder.create();
         prefs.getWindow().getAttributes().windowAnimations = R.style.DialogTheme;
