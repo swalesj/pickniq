@@ -8,40 +8,32 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="swalesj.pickniq.MainActivity"
     tools:showIn="@layout/app_bar_main">
+
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-    <fragment
-        android:id="@+id/map"
-        class="com.google.android.gms.maps.SupportMapFragment"
-        android:layout_width="match_parent"
-        android:layout_height="260dp"
-        tools:layout="@layout/content_main" />
-    <ScrollView
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp">
+        android:orientation="vertical">
 
-        <LinearLayout
+        <fragment
+            android:id="@+id/map"
+            class="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:layout_height="350dp"
+            tools:layout="@layout/content_main" />
 
-            <RelativeLayout
-                android:id="@+id/cards"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/map"
-                android:background="#d3d3d3"
-                android:gravity="bottom">
+                android:layout_height="wrap_content"
+                android:orientation="vertical" >
 
                 <android.support.v7.widget.CardView
-                    android:id="@+id/card1"
+                    android:id="@+id/title_card"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentTop="true"
                     android:layout_gravity="top"
@@ -56,7 +48,7 @@
                         android:padding="16dp">
 
                         <ImageView
-                            android:id="@+id/person_photo"
+                            android:id="@+id/logo"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
@@ -65,84 +57,44 @@
                             android:src="@mipmap/ic_launcher_round" />
 
                         <TextView
-                            android:id="@+id/person_name"
+                            android:id="@+id/main_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@+id/person_photo"
+                            android:layout_toRightOf="@+id/logo"
                             android:paddingTop="10dp"
-                            android:text="Recommended nearby:"
+                            android:text="Recommended nearby"
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/person_age"
+                            android:id="@+id/subtext"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/person_name"
-                            android:layout_toRightOf="@+id/person_photo"
-                            android:text="Showing top rated restaurants within 10 miles" />
+                            android:layout_below="@+id/main_text"
+                            android:layout_toRightOf="@+id/logo"
+                            android:text="Showing top rated restaurants near you:" />
 
                     </RelativeLayout>
 
                 </android.support.v7.widget.CardView>
-
                 <android.support.v7.widget.CardView
-                    android:id="@+id/card2"
+                    android:id="@+id/card1"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@id/card1"
-                    android:layout_gravity="center_horizontal">
-
-                    <RelativeLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="16dp">
-
-                        <ImageView
-                            android:id="@+id/person_photo2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentTop="true"
-                            android:layout_marginRight="16dp"
-                            android:src="@drawable/location" />
-
-                        <TextView
-                            android:id="@+id/person_name2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toRightOf="@+id/person_photo2"
-                            android:text="Mancino's Pizza &amp; Grinders"
-                            android:textSize="24sp" />
-
-                        <TextView
-                            android:id="@+id/person_age2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_below="@+id/person_name2"
-                            android:layout_toRightOf="@+id/person_photo2"
-                            android:text="Traditional chain for pies and sandwiches" />
-
-                    </RelativeLayout>
-                </android.support.v7.widget.CardView>
-
-                <android.support.v7.widget.CardView
-                    android:id="@+id/card3"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_below="@id/card2"
-                    android:layout_gravity="center_horizontal"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top"
                     tools:padding="10dp">
 
                     <RelativeLayout
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
                         android:padding="16dp">
 
                         <ImageView
-                            android:id="@+id/person_photo3"
+                            android:id="@+id/location1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
@@ -151,42 +103,44 @@
                             android:src="@drawable/location" />
 
                         <TextView
-                            android:id="@+id/person_name3"
+                            android:id="@+id/name1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toRightOf="@+id/person_photo3"
-                            android:text="Peppino's Pizza Express"
+                            android:layout_toRightOf="@+id/location1"
+                            android:paddingTop="10dp"
+                            android:text=""
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/person_age3"
+                            android:id="@+id/details1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/person_name3"
-                            android:layout_toRightOf="@+id/person_photo3"
-                            android:text="Hand-tossed pizzas &amp; rustic Italian eats" />
+                            android:layout_below="@+id/name1"
+                            android:layout_toRightOf="@+id/location1"
+                            android:text="" />
 
                     </RelativeLayout>
-                </android.support.v7.widget.CardView>
 
+                </android.support.v7.widget.CardView>
                 <android.support.v7.widget.CardView
-                    android:id="@+id/card4"
+                    android:id="@+id/card2"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
+                    android:layout_height="match_parent"
                     android:layout_alignParentEnd="true"
-                    android:layout_below="@id/card3"
-                    android:layout_gravity="center_horizontal"
-                    android:padding="10dp">
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top"
+                    tools:padding="10dp">
 
                     <RelativeLayout
+
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
                         android:padding="16dp">
 
                         <ImageView
-                            android:id="@+id/person_photo4"
+                            android:id="@+id/location2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_alignParentLeft="true"
@@ -195,29 +149,74 @@
                             android:src="@drawable/location" />
 
                         <TextView
-                            android:id="@+id/person_name4"
+                            android:id="@+id/name2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_alignParentTop="true"
-                            android:layout_toRightOf="@+id/person_photo4"
-                            android:text="Murphy's Family Restaurant"
+                            android:layout_toRightOf="@+id/location2"
+                            android:paddingTop="10dp"
+                            android:text=""
                             android:textSize="24sp" />
 
                         <TextView
-                            android:id="@+id/person_age4"
+                            android:id="@+id/details2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_below="@+id/person_name4"
-                            android:layout_toRightOf="@+id/person_photo4"
-                            android:text="All-day breakfast &amp; lunch in homey digs" />
+                            android:layout_below="@+id/name2"
+                            android:layout_toRightOf="@+id/location2"
+                            android:text="" />
 
                     </RelativeLayout>
+
                 </android.support.v7.widget.CardView>
+                <android.support.v7.widget.CardView
+                    android:id="@+id/card3"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_gravity="top"
+                    tools:padding="10dp">
 
+                    <RelativeLayout
 
-            </RelativeLayout>
-        </LinearLayout>
-    </ScrollView>
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentTop="true"
+                        android:padding="16dp">
+
+                        <ImageView
+                            android:id="@+id/location3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginRight="16dp"
+                            android:src="@drawable/location" />
+
+                        <TextView
+                            android:id="@+id/name3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@+id/location3"
+                            android:paddingTop="10dp"
+                            android:text=""
+                            android:textSize="24sp" />
+
+                        <TextView
+                            android:id="@+id/details3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_below="@+id/name3"
+                            android:layout_toRightOf="@+id/location3"
+                            android:text="" />
+
+                    </RelativeLayout>
+
+                </android.support.v7.widget.CardView>
+            </LinearLayout>
+        </ScrollView>
+
     </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

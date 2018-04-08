@@ -1,5 +1,6 @@
 package swalesj.pickniq;
 
+import android.app.Application;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -19,6 +20,7 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 /*
+ * User.
  */
 public class User {
     // Debug tag.
@@ -35,6 +37,9 @@ public class User {
 
     // Email.
     private String email;
+
+    private int preferredRadius, minimumRating;
+    private boolean inexpensive, moderate, expensive, opennow;
 
     // Constructor.
     public User(FirebaseUser u) {
@@ -54,8 +59,7 @@ public class User {
     public String getEmail() { return email; }
 
     // Set email.
-    public void setEmail(String email) { this.email = email;
-    }
+    public void setEmail(String email) { this.email = email; }
 
     // Get name.
     public String getName() { return name; }
@@ -78,13 +82,18 @@ public class User {
 
     // Register user to Firestore.
     public void register() {
-        if (checkUserExists()) return;
-
+        setDefaultPrefs();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         String uid = getUid();
         Map<String, Object> userData = new HashMap<>();
         userData.put("name", getName());
         userData.put("email", getEmail());
+        userData.put("preferred_radius", this.preferredRadius);
+        userData.put("minimum_rating", this.minimumRating);
+        userData.put("inexpensive", this.inexpensive);
+        userData.put("moderate", this.moderate);
+        userData.put("expensive", this.expensive);
+        userData.put("open_now", this.opennow);
 
         db.collection("Users").document(uid).set(userData)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -98,6 +107,8 @@ public class User {
 //                      String error = "Failed to register user with Firestore DB.";
                 }
         });
+
+
     }
 
     // Check if user exists in Firestore DB.
@@ -123,5 +134,15 @@ public class User {
         });
 
         return isRegistered();
+    }
+
+    // Set default preferences.
+    public void setDefaultPrefs() {
+        this.preferredRadius = 10;
+        this.minimumRating = 1;
+        this.inexpensive = true;
+        this.moderate = true;
+        this.expensive = true;
+        this.opennow = false;
     }
 }

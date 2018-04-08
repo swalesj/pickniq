@@ -22,8 +22,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.places.Places;
@@ -40,18 +44,32 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
+import static swalesj.pickniq.AppConfig.*;
 
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
-    private boolean mLocationPermissionGranted = false;
+
+
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
     public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
     private Location mLastKnownLocation;
+    private boolean mLocationPermissionGranted = false;
+
+    ArrayList<String> placeNames, placeDetails;
+    private TextView location1name, location2name, location3name;
+    private TextView location1details, location2details, location3details;
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -63,10 +81,21 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
            @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Start a new search", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Searching...", Snackbar.LENGTH_SHORT)
                         .setAction("Search", null).show();
+                googleMap.clear();
+                loadNearbyPlaces(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                onMapReady(googleMap);
             }
         });
+
+        location1name = findViewById (R.id.name1);
+        location2name = findViewById (R.id.name2);
+        location3name = findViewById (R.id.name3);
+
+        location1details = findViewById(R.id.details1);
+        location2details = findViewById(R.id.details2);
+        location3details = findViewById(R.id.details3);
 
         getLocationPermission();
         mGoogleApiClient = new GoogleApiClient
@@ -87,7 +116,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
-
+    //DEPRECATED
     public void launchPrefDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -95,8 +124,8 @@ public class MainActivity extends AppCompatActivity
                 "$",
                 "$$",
                 "$$$",
-                ">10 miles",
-                "Fast Food",
+                ">5 miles",
+                "Rating < 3",
                 "Dine-in"
         };
         //these values will have to be pulled from Firebase later on
@@ -179,7 +208,9 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_favorites) {
 
         } else if (id == R.id.nav_prefs) {
-            launchPrefDialog();
+            //launchPrefDialog();
+            Intent launch_prefs = new Intent(this, PreferencesActivity.class);
+            startActivity(launch_prefs);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);
@@ -202,22 +233,26 @@ public class MainActivity extends AppCompatActivity
                                     // GPS location can be null if GPS is switched off
                                     if (location != null) {
                                         MarkerOptions mOps = new MarkerOptions();
-
+                                        mLastKnownLocation = location;
                                         LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
                                         mOps.position(latLng);
                                         mOps.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
                                         CameraPosition camPos = new CameraPosition.Builder()
                                                 .target(latLng)
                                                 .tilt(80)
-                                                .zoom(18)
+                                                .zoom(13)
                                                 .bearing(0)
                                                 .build();
                                         googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
                                         googleMap.setMyLocationEnabled(true);
-                                        googleMap.addMarker(mOps);
+                                        //googleMap.addMarker(mOps);
+
                                         googleMap.setMapStyle(new MapStyleOptions(getResources()
                                                 .getString(R.string.maps_style)));
                                         onLocationChanged(location);
+                                        double lat = location.getLatitude();
+                                        double lon = location.getLongitude();
+                                        loadNearbyPlaces(lat, lon);
                                     }
                                 }
                             })
@@ -232,6 +267,7 @@ public class MainActivity extends AppCompatActivity
             } catch (SecurityException s) {
                 //do something
             }
+
         }
 
     public void onLocationChanged(Location location) {
@@ -278,4 +314,132 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void loadNearbyPlaces(double lat, double lon) {
+        String type = "restaurant";
+        String radius = "5000";
+        StringBuilder placesURL =
+                new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
+        placesURL.append("location=").append(lat).append(",").append(lon);
+        placesURL.append("&radius=").append(radius);
+        placesURL.append("&types=").append(type);
+        placesURL.append("&sensor=true");
+        placesURL.append("&key=" + "AIzaSyBQE86eAF8UylrcBwy7WQtJLDSUjQAaJLc");
+        placesURL.append("&minprice=1");
+        placesURL.append("&maxprice=4");
+
+        JsonObjectRequest request = new JsonObjectRequest(placesURL.toString(), null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject result) {
+                        //Log.i(TAG, "onResponse: Result= " + result.toString());
+                        parseLocationResult(result);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                    }
+                });
+        AppController.getInstance().addToRequestQueue(request);
+
+    }
+    private void parseLocationResult(JSONObject result) {
+
+        String id, place_id, placeName = "", reference, icon, vicinity = null;
+        double latitude, longitude;
+
+        placeNames = new ArrayList<>();
+        placeDetails = new ArrayList<>();
+        placeNames.clear();
+        placeDetails.clear();
+        placeNames.removeAll(placeNames);
+        placeDetails.removeAll(placeDetails);
+
+        try {
+            JSONArray jsonArray = result.getJSONArray("results");
+
+            if (result.getString(STATUS).equalsIgnoreCase(OK)) {
+
+                String price_level;
+                String price_display;
+                String rating;
+                String snippet;
+                double previousRating = 0;
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject place = jsonArray.getJSONObject(i);
+
+                    id = place.getString(SUPERMARKET_ID);
+                    place_id = place.getString(PLACE_ID);
+                    if (!place.isNull(NAME)) {
+                        placeName = place.getString(NAME);
+                    }
+                    if (!place.isNull(VICINITY)) {
+                        vicinity = place.getString(VICINITY);
+                    }
+                    latitude = place.getJSONObject(GEOMETRY).getJSONObject(LOCATION)
+                            .getDouble(LATITUDE);
+                    longitude = place.getJSONObject(GEOMETRY).getJSONObject(LOCATION)
+                            .getDouble(LONGITUDE);
+                    reference = place.getString(REFERENCE);
+                    price_level = place.getString(PRICE_LEVEL);
+                    rating = place.getString(RATING);
+                    MarkerOptions markerOptions = new MarkerOptions();
+                    LatLng latLng = new LatLng(latitude, longitude);
+                    markerOptions.position(latLng);
+                    markerOptions.title(placeName);
+
+                    switch (price_level) {
+                        case "1":
+                            price_display = "$";
+                            break;
+                        case "2":
+                            price_display = "$$";
+                            break;
+                        case "3":
+                            price_display = "$$$";
+                            break;
+                        case "4":
+                            price_display = "$$$$";
+                            break;
+                        default:
+                            price_display = "No data";
+                            break;
+                    }
+
+                    snippet = ("Rating: "+rating+"/5 "+"Price: "+price_display);
+                    markerOptions.snippet(snippet);
+
+                    if (Double.parseDouble(rating) >= previousRating) {
+                        placeDetails.add(0,snippet);
+                        placeNames.add(0,placeName);
+                        previousRating = Double.parseDouble(rating);
+                    }
+                    else {
+                        placeDetails.add(snippet);
+                        placeNames.add(placeName);
+                    }
+
+                    googleMap.addMarker(markerOptions).showInfoWindow();
+                }
+                if (placeNames.size() > 0) {
+                    location1name.setText(placeNames.get(0));
+                    location1details.setText(placeDetails.get(0));
+                }
+                if (placeNames.size() > 1) {
+                    location2name.setText(placeNames.get(1));
+                    location2details.setText(placeDetails.get(1));
+                }
+                if (placeNames.size() > 2) {
+                    location3name.setText(placeNames.get(2));
+                    location3details.setText(placeDetails.get(2));
+                }
+            }
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+        } catch (JSONException e) {
+
+            e.printStackTrace();
+            Log.e(TAG, "parseLocationResult: Error=" + e.getMessage());
+        }
+    }
 }

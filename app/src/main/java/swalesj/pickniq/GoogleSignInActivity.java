@@ -147,10 +147,10 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
                     DocumentSnapshot document = task.getResult();
                     if (document.exists()) {
                         Log.d(TAG, "DocumentSnapshot data: " + task.getResult().getData());
-                        callMainActivity();
+                        callMainActivity(u, false);
                     } else {
                         Log.d(TAG, "No such document");
-                        callNewUserActivity(u);
+                        callMainActivity(u, true);
                     }
                 } else {
                     Log.d(TAG, "get failed with ", task.getException());
@@ -163,19 +163,12 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     /**
      * Call main activity.
      */
-    private void callMainActivity() {
-        startActivity(new Intent(this, MainActivity.class));
-    }
+    private void callMainActivity(FirebaseUser u, boolean newUser) {
+        User pickniqUser = new User(u);
+        ((AppController) this.getApplication()).setUID(pickniqUser.getUid());
 
+        if (newUser) pickniqUser.register();
 
-    /**
-     * Call new user activity.
-     */
-    private void callNewUserActivity(FirebaseUser u) {
-        User newUser = new User(u);
-        newUser.register();
-
-        // TODO: Get user preferences for new user.
         startActivity(new Intent(this, MainActivity.class));
     }
 
