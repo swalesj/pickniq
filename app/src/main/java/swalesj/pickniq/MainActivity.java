@@ -67,6 +67,7 @@ public class MainActivity extends AppCompatActivity
     ArrayList<String> placeNames, placeDetails, placeLocations;
     private TextView location1name, location2name, location3name;
     private TextView location1details, location2details, location3details;
+    private TextView searchText;
     private CardView card1, card2, card3;
 
     @Override
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         FloatingActionButton fab = findViewById(R.id.fab);
+        searchText = findViewById(R.id.subtext);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -323,6 +325,13 @@ public class MainActivity extends AppCompatActivity
         String type = "restaurant";
         long radiusValue = 3;
         radiusValue = ((AppController) this.getApplication()).getUser().getPreferredRadius();
+
+        LatLng latLng = new LatLng(lat, lon);
+        int zoom = 13;
+        if (radiusValue >= 5) zoom -= 1;
+        if (radiusValue >= 10) zoom -= 1;
+        if (radiusValue >= 20) zoom -= 1;
+
         boolean inexpensive = ((AppController) this.getApplication()).getUser().isInexpensive();
         boolean moderate = ((AppController) this.getApplication()).getUser().isModerate();
         boolean expensive = ((AppController) this.getApplication()).getUser().isExpensive();
@@ -335,6 +344,16 @@ public class MainActivity extends AppCompatActivity
         placesURL.append("&types=").append(type);
         placesURL.append("&sensor=true");
         placesURL.append("&key=" + "AIzaSyBQE86eAF8UylrcBwy7WQtJLDSUjQAaJLc");
+
+
+        CameraPosition camPos = new CameraPosition.Builder()
+                .target(latLng)
+                .tilt(80)
+                .zoom(zoom)
+                .bearing(0)
+                .build();
+        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+
         if (((AppController) getApplication()).getUser().isOpennow()) {
             placesURL.append("&opennow=true");
         }
@@ -396,7 +415,8 @@ public class MainActivity extends AppCompatActivity
         placeNames.clear();
         placeDetails.clear();
         placeLocations.clear();
-        //places.clear();
+
+        searchText.setText("Showing the best restaurants according to your preferences:");
 
         try {
             JSONArray jsonArray = result.getJSONArray("results");

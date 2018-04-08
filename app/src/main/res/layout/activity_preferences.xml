@@ -59,21 +59,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="$ : Inexpensive" />
+                    android:text="Inexpensive" />
 
                 <CheckBox
                     android:id="@+id/moderate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="$$ : Moderate" />
+                    android:text="Moderate" />
 
                 <CheckBox
                     android:id="@+id/expensive"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="8dp"
-                    android:text="$$$ : Expensive" />
+                    android:text="Expensive" />
 
                 <TextView
                     android:id="@+id/radiusText"
