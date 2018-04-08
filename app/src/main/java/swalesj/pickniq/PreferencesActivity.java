@@ -45,8 +45,6 @@ public class PreferencesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         UID = ((AppController) this.getApplication()).getUID();
-        //radiusText = findViewById(R.id.radiusText);
-        //ratingText = findViewById(R.id.ratingText);
         setContentView(R.layout.activity_preferences);
 
         ActionBar actionBar = getActionBar();
@@ -117,6 +115,9 @@ public class PreferencesActivity extends AppCompatActivity {
 
         long radiusValue = (long) data.get("preferred_radius");
         radius.setProgress(toIntExact(radiusValue));
+
+        checked = (Boolean) data.get("open_now");
+        opennow.setChecked(checked);
 
     }
 
@@ -202,6 +203,16 @@ public class PreferencesActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 data.put("expensive", expensive.isChecked());
+                updateFirestore();
+            }
+        });
+
+        // Open now.
+        opennow = findViewById(R.id.open);
+        opennow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                data.put("open_now", opennow.isChecked());
                 updateFirestore();
             }
         });
