@@ -323,6 +323,9 @@ public class MainActivity extends AppCompatActivity
         String type = "restaurant";
         long radiusValue = 3;
         radiusValue = ((AppController) this.getApplication()).getUser().getPreferredRadius();
+        boolean inexpensive = ((AppController) this.getApplication()).getUser().isInexpensive();
+        boolean moderate = ((AppController) this.getApplication()).getUser().isModerate();
+        boolean expensive = ((AppController) this.getApplication()).getUser().isExpensive();
         radiusValue *= 1609;
         String radius = Long.toString(radiusValue);
         StringBuilder placesURL =
@@ -332,8 +335,35 @@ public class MainActivity extends AppCompatActivity
         placesURL.append("&types=").append(type);
         placesURL.append("&sensor=true");
         placesURL.append("&key=" + "AIzaSyBQE86eAF8UylrcBwy7WQtJLDSUjQAaJLc");
-        placesURL.append("&minprice=1");
-        placesURL.append("&maxprice=4");
+
+        // determine pricing
+        if ((inexpensive && moderate && expensive) ||
+                (inexpensive && !moderate && expensive)) {
+            placesURL.append("&minprice=1");
+            placesURL.append("&maxprice=4");
+        }
+        else if (inexpensive && moderate && !expensive) {
+            placesURL.append("&minprice=1");
+            placesURL.append("&maxprice=3");
+        }
+        else if ((!inexpensive && moderate && expensive)||
+                    (!inexpensive && moderate && !expensive)) {
+            placesURL.append("&minprice=2");
+            placesURL.append("&maxprice=3");
+        }
+        else if (!inexpensive && !moderate && expensive) {
+            placesURL.append("&minprice=3");
+            placesURL.append("&maxprice=4");
+        }
+        else if (inexpensive && !moderate && !expensive) {
+            placesURL.append("&minprice=1");
+            placesURL.append("&maxprice=2");
+        }
+        else {
+            placesURL.append("&minprice=0");
+            placesURL.append("&maxprice=4");
+        }
+
 
         JsonObjectRequest request = new JsonObjectRequest(placesURL.toString(), null,
                 new Response.Listener<JSONObject>() {

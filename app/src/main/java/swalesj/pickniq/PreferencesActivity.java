@@ -156,6 +156,7 @@ public class PreferencesActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 data.put("minimum_rating", value);
                 String ratingLabel = "Minimum rating: " + String.valueOf(value);
+                ((AppController) getApplication()).getUser().setMinimumRating(value);
                 ratingText.setText(ratingLabel);
                 updateFirestore();
             }
@@ -181,6 +182,7 @@ public class PreferencesActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 data.put("inexpensive", inexpensive.isChecked());
+                ((AppController) getApplication()).getUser().setInexpensive(inexpensive.isChecked());
                 updateFirestore();
             }
         });
@@ -195,6 +197,7 @@ public class PreferencesActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 data.put("moderate", moderate.isChecked());
+                ((AppController) getApplication()).getUser().setModerate(moderate.isChecked());
                 updateFirestore();
             }
         });
@@ -209,6 +212,7 @@ public class PreferencesActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG).show();
                 }
                 data.put("expensive", expensive.isChecked());
+                ((AppController) getApplication()).getUser().setExpensive(expensive.isChecked());
                 updateFirestore();
             }
         });
@@ -219,6 +223,7 @@ public class PreferencesActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 data.put("open_now", opennow.isChecked());
+                ((AppController) getApplication()).getUser().setOpennow(opennow.isChecked());
                 updateFirestore();
             }
         });
