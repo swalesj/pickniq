@@ -1,10 +1,10 @@
 package swalesj.pickniq;
 
-import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -12,6 +12,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -30,6 +31,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,12 +45,11 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.Collections;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
 import static swalesj.pickniq.AppConfig.*;
@@ -57,16 +58,16 @@ import static swalesj.pickniq.AppConfig.*;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener, OnMapReadyCallback {
 
-
     private GoogleMap googleMap;
     private GoogleApiClient mGoogleApiClient;
-    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION=1;
+    public static final int PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 1;
     private Location mLastKnownLocation;
     private boolean mLocationPermissionGranted = false;
 
-    ArrayList<String> placeNames, placeDetails;
+    ArrayList<String> placeNames, placeDetails, placeLocations;
     private TextView location1name, location2name, location3name;
     private TextView location1details, location2details, location3details;
+    private CardView card1, card2, card3;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -75,11 +76,9 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // TODO: Start newsearch selection when button is pressed
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
-           @Override
+            @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Searching...", Snackbar.LENGTH_SHORT)
                         .setAction("Search", null).show();
@@ -89,13 +88,17 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
-        location1name = findViewById (R.id.name1);
-        location2name = findViewById (R.id.name2);
-        location3name = findViewById (R.id.name3);
+        location1name = findViewById(R.id.name1);
+        location2name = findViewById(R.id.name2);
+        location3name = findViewById(R.id.name3);
 
         location1details = findViewById(R.id.details1);
         location2details = findViewById(R.id.details2);
         location3details = findViewById(R.id.details3);
+
+        card1 = findViewById(R.id.card1);
+        card2 = findViewById(R.id.card2);
+        card3 = findViewById(R.id.card3);
 
         getLocationPermission();
         mGoogleApiClient = new GoogleApiClient
@@ -116,6 +119,7 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+
     //DEPRECATED
     public void launchPrefDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -134,11 +138,11 @@ public class MainActivity extends AppCompatActivity
         };
 
         builder.setMultiChoiceItems(dialog_items_price, selected_items_price, new DialogInterface.OnMultiChoiceClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i, boolean b) {
-                        //save checked options
-                    }
-                })
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i, boolean b) {
+                //save checked options
+            }
+        })
                 .setIcon(R.mipmap.ic_launcher_round)
                 .setNegativeButton(R.string.cancel_prefs, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface prefs, int id) {
@@ -224,51 +228,51 @@ public class MainActivity extends AppCompatActivity
         mLastKnownLocation = null;
         FusedLocationProviderClient locationClient = getFusedLocationProviderClient(this);
 
-            getLocationPermission();
-            try {
-                    locationClient.getLastLocation()
-                            .addOnSuccessListener(new OnSuccessListener<Location>() {
-                                @Override
-                                public void onSuccess(Location location) {
-                                    // GPS location can be null if GPS is switched off
-                                    if (location != null) {
-                                        MarkerOptions mOps = new MarkerOptions();
-                                        mLastKnownLocation = location;
-                                        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
-                                        mOps.position(latLng);
-                                        mOps.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
-                                        CameraPosition camPos = new CameraPosition.Builder()
-                                                .target(latLng)
-                                                .tilt(80)
-                                                .zoom(13)
-                                                .bearing(0)
-                                                .build();
-                                        googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
-                                        googleMap.setMyLocationEnabled(true);
-                                        //googleMap.addMarker(mOps);
+        getLocationPermission();
+        try {
+            locationClient.getLastLocation()
+                    .addOnSuccessListener(new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location location) {
+                            // GPS location can be null if GPS is switched off
+                            if (location != null) {
+                                MarkerOptions mOps = new MarkerOptions();
+                                mLastKnownLocation = location;
+                                LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
+                                mOps.position(latLng);
+                                mOps.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED));
+                                CameraPosition camPos = new CameraPosition.Builder()
+                                        .target(latLng)
+                                        .tilt(80)
+                                        .zoom(13)
+                                        .bearing(0)
+                                        .build();
+                                googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(camPos));
+                                googleMap.setMyLocationEnabled(true);
+                                //googleMap.addMarker(mOps);
 
-                                        googleMap.setMapStyle(new MapStyleOptions(getResources()
-                                                .getString(R.string.maps_style)));
-                                        onLocationChanged(location);
-                                        double lat = location.getLatitude();
-                                        double lon = location.getLongitude();
-                                        loadNearbyPlaces(lat, lon);
-                                    }
-                                }
-                            })
-                            .addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d("MapDemoActivity", "Error trying to get last GPS location");
-                                    e.printStackTrace();
-                                }
-                            });
-               // }
-            } catch (SecurityException s) {
-                //do something
-            }
-
+                                googleMap.setMapStyle(new MapStyleOptions(getResources()
+                                        .getString(R.string.maps_style)));
+                                onLocationChanged(location);
+                                double lat = location.getLatitude();
+                                double lon = location.getLongitude();
+                                loadNearbyPlaces(lat, lon);
+                            }
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d("MapDemoActivity", "Error trying to get last GPS location");
+                            e.printStackTrace();
+                        }
+                    });
+            // }
+        } catch (SecurityException s) {
+            //do something
         }
+
+    }
 
     public void onLocationChanged(Location location) {
         // New location has now been determined
@@ -293,7 +297,7 @@ public class MainActivity extends AppCompatActivity
         } else {
             ActivityCompat.requestPermissions(this,
                     new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                            android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
@@ -315,8 +319,11 @@ public class MainActivity extends AppCompatActivity
     }
 
     public void loadNearbyPlaces(double lat, double lon) {
+
         String type = "restaurant";
-        String radius = "5000";
+        int radiusValue = 2;
+        radiusValue *= 1609;
+        String radius = Integer.toString(radiusValue);
         StringBuilder placesURL =
                 new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         placesURL.append("location=").append(lat).append(",").append(lon);
@@ -343,17 +350,20 @@ public class MainActivity extends AppCompatActivity
         AppController.getInstance().addToRequestQueue(request);
 
     }
+
     private void parseLocationResult(JSONObject result) {
 
-        String id, place_id, placeName = "", reference, icon, vicinity = null;
-        double latitude, longitude;
+        String id, place_id, placeName = "", reference, icon, vicinity = null, placeAddress;
+        double latitude = 0, longitude = 0;
 
         placeNames = new ArrayList<>();
         placeDetails = new ArrayList<>();
+        placeLocations = new ArrayList<>();
+
         placeNames.clear();
         placeDetails.clear();
-        placeNames.removeAll(placeNames);
-        placeDetails.removeAll(placeDetails);
+        placeLocations.clear();
+        //places.clear();
 
         try {
             JSONArray jsonArray = result.getJSONArray("results");
@@ -364,13 +374,19 @@ public class MainActivity extends AppCompatActivity
                 String price_display;
                 String rating;
                 String snippet;
-                double previousRating = 0;
+                String currentAdd;
+                double highestRating = 0;
+                double secondHighestRating = 0;
+                double thirdHighestRating = 0;
+                //TODO Improve logic here; not displaying top 3
+
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject place = jsonArray.getJSONObject(i);
 
-                    id = place.getString(SUPERMARKET_ID);
-                    place_id = place.getString(PLACE_ID);
+                    //place_id = place.getString(PLACE_ID);
+                    //places.add(GeoDataClient.getPlaceById(place_id));
+
                     if (!place.isNull(NAME)) {
                         placeName = place.getString(NAME);
                     }
@@ -388,7 +404,7 @@ public class MainActivity extends AppCompatActivity
                     LatLng latLng = new LatLng(latitude, longitude);
                     markerOptions.position(latLng);
                     markerOptions.title(placeName);
-
+                    Log.d(TAG, rating);
                     switch (price_level) {
                         case "1":
                             price_display = "$";
@@ -407,17 +423,28 @@ public class MainActivity extends AppCompatActivity
                             break;
                     }
 
-                    snippet = ("Rating: "+rating+"/5 "+"Price: "+price_display);
+                    snippet = ("Rating: " + rating + "/5 " + "Price: " + price_display);
                     markerOptions.snippet(snippet);
-
-                    if (Double.parseDouble(rating) >= previousRating) {
-                        placeDetails.add(0,snippet);
-                        placeNames.add(0,placeName);
-                        previousRating = Double.parseDouble(rating);
-                    }
-                    else {
+                    currentAdd = Double.toString(latitude) + "," + Double.toString(longitude);
+                    if (Double.parseDouble(rating) > highestRating) {
+                        placeDetails.add(0, snippet);
+                        placeNames.add(0, placeName);
+                        placeLocations.add(0, currentAdd);
+                        highestRating = Double.parseDouble(rating);
+                    } else if (Double.parseDouble(rating) > secondHighestRating) {
+                        placeDetails.add(1, snippet);
+                        placeNames.add(1, placeName);
+                        placeLocations.add(1, currentAdd);
+                        secondHighestRating = Double.parseDouble(rating);
+                    } else if (Double.parseDouble(rating) > thirdHighestRating) {
+                        placeDetails.add(2, snippet);
+                        placeNames.add(2, placeName);
+                        placeLocations.add(2, currentAdd);
+                        thirdHighestRating = Double.parseDouble(rating);
+                    } else {
                         placeDetails.add(snippet);
                         placeNames.add(placeName);
+                        placeLocations.add(currentAdd);
                     }
 
                     googleMap.addMarker(markerOptions).showInfoWindow();
@@ -425,14 +452,44 @@ public class MainActivity extends AppCompatActivity
                 if (placeNames.size() > 0) {
                     location1name.setText(placeNames.get(0));
                     location1details.setText(placeDetails.get(0));
+
+                    card1.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri mapUri = Uri.parse("http://maps.google.com/maps?q=" + placeLocations.get(0));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, mapUri);
+                            intent.setPackage("com.google.android.apps.maps");
+                            startActivity(intent);
+                        }
+                    });
                 }
                 if (placeNames.size() > 1) {
                     location2name.setText(placeNames.get(1));
                     location2details.setText(placeDetails.get(1));
+
+                    card2.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri mapUri = Uri.parse("http://maps.google.com/maps?q=" + placeLocations.get(1));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, mapUri);
+                            intent.setPackage("com.google.android.apps.maps");
+                            startActivity(intent);
+                        }
+                    });
                 }
                 if (placeNames.size() > 2) {
                     location3name.setText(placeNames.get(2));
                     location3details.setText(placeDetails.get(2));
+
+                    card3.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Uri mapUri = Uri.parse("http://maps.google.com/maps?q=" + placeLocations.get(2));
+                            Intent intent = new Intent(Intent.ACTION_VIEW, mapUri);
+                            intent.setPackage("com.google.android.apps.maps");
+                            startActivity(intent);
+                        }
+                    });
                 }
             }
             googleMap.getUiSettings().setZoomControlsEnabled(true);
