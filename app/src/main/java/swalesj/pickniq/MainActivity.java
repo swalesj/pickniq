@@ -321,9 +321,10 @@ public class MainActivity extends AppCompatActivity
     public void loadNearbyPlaces(double lat, double lon) {
 
         String type = "restaurant";
-        int radiusValue = 2;
+        long radiusValue = 3;
+        radiusValue = ((AppController) this.getApplication()).getUser().getPreferredRadius();
         radiusValue *= 1609;
-        String radius = Integer.toString(radiusValue);
+        String radius = Long.toString(radiusValue);
         StringBuilder placesURL =
                 new StringBuilder("https://maps.googleapis.com/maps/api/place/nearbysearch/json?");
         placesURL.append("location=").append(lat).append(",").append(lon);

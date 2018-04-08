@@ -34,7 +34,7 @@ public class PreferencesActivity extends AppCompatActivity {
     private static final String TAG = "preferencesActivity";
 
     private String UID;
-
+    //private User user;
     public HashMap<String, Object> data;
     public TextView radiusText, ratingText;
     public SeekBar minRating, radius;
@@ -92,33 +92,39 @@ public class PreferencesActivity extends AppCompatActivity {
 
     public void setData(HashMap map) {
         this.data = new HashMap<>(map);
+        //user = ((AppController) this.getApplication()).getUser();
         Log.d(TAG, "setData: " + this.data);
 
         // minimum_rating.
         long min = (long) data.get("minimum_rating");
         minRating.setProgress(toIntExact(min));
-
         // inexpensive.
         Boolean checked = (Boolean) data.get("inexpensive");
         Log.d(TAG, "setFieldsFromFirestore: " + checked);
         inexpensive.setChecked(checked);
+        ((AppController) this.getApplication()).getUser().setInexpensive(checked);
 
         // moderate.
         checked = (Boolean) data.get("moderate");
         Log.d(TAG, "setFieldsFromFirestore: " + checked);
         moderate.setChecked(checked);
+        ((AppController) this.getApplication()).getUser().setModerate(checked);
 
         // expensive.
         checked = (Boolean) data.get("expensive");
         Log.d(TAG, "setFieldsFromFirestore: " + checked);
         expensive.setChecked(checked);
+        ((AppController) this.getApplication()).getUser().setExpensive(checked);
 
         long radiusValue = (long) data.get("preferred_radius");
         radius.setProgress(toIntExact(radiusValue));
+        ((AppController) this.getApplication()).getUser().setPreferredRadius(radiusValue);
 
         checked = (Boolean) data.get("open_now");
         opennow.setChecked(checked);
+        ((AppController) this.getApplication()).getUser().setOpennow(checked);
 
+        updateFirestore();
     }
 
     public void updateFirestore() {
@@ -226,6 +232,7 @@ public class PreferencesActivity extends AppCompatActivity {
             public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
                 data.put("preferred_radius", value);
                 String radiusLabel = "Search Radius: " + String.valueOf(value) + " miles";
+                ((AppController) getApplication()).getUser().setPreferredRadius(value);
                 radiusText.setText(radiusLabel);
                 updateFirestore();
             }

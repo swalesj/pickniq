@@ -166,8 +166,12 @@ public class GoogleSignInActivity extends AppCompatActivity implements View.OnCl
     private void callMainActivity(FirebaseUser u, boolean newUser) {
         User pickniqUser = new User(u);
         ((AppController) this.getApplication()).setUID(pickniqUser.getUid());
+        ((AppController) this.getApplication()).setUser(pickniqUser);
 
-        if (newUser) pickniqUser.register();
+        if (newUser) {
+            pickniqUser.register();
+            startActivity(new Intent(this, PreferencesActivity.class));
+        }
 
         startActivity(new Intent(this, MainActivity.class));
     }

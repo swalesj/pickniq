@@ -38,7 +38,59 @@ public class User {
     // Email.
     private String email;
 
-    private int preferredRadius, minimumRating;
+    public void setRegistered(boolean registered) {
+        this.registered = registered;
+    }
+
+    public long getPreferredRadius() {
+        return preferredRadius;
+    }
+
+    public void setPreferredRadius(long preferredRadius) {
+        this.preferredRadius = preferredRadius;
+    }
+
+    public long getMinimumRating() {
+        return minimumRating;
+    }
+
+    public void setMinimumRating(long minimumRating) {
+        this.minimumRating = minimumRating;
+    }
+
+    public boolean isInexpensive() {
+        return inexpensive;
+    }
+
+    public void setInexpensive(boolean inexpensive) {
+        this.inexpensive = inexpensive;
+    }
+
+    public boolean isModerate() {
+        return moderate;
+    }
+
+    public void setModerate(boolean moderate) {
+        this.moderate = moderate;
+    }
+
+    public boolean isExpensive() {
+        return expensive;
+    }
+
+    public void setExpensive(boolean expensive) {
+        this.expensive = expensive;
+    }
+
+    public boolean isOpennow() {
+        return opennow;
+    }
+
+    public void setOpennow(boolean opennow) {
+        this.opennow = opennow;
+    }
+
+    private long preferredRadius, minimumRating;
     private boolean inexpensive, moderate, expensive, opennow;
 
     // Constructor.
@@ -46,7 +98,7 @@ public class User {
         uid = u.getUid();
         name = u.getDisplayName();
         email = u.getEmail();
-
+        preferredRadius = 3;
         // Below lines were an idea for allowing user object to register itself to Firestore DB..
         // Doesn't grab data fast enough.
         // This may require some app-wide utilities for getting data and waiting for said data.
