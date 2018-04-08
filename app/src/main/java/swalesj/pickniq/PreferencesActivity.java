@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -168,6 +169,10 @@ public class PreferencesActivity extends AppCompatActivity {
         inexpensive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!inexpensive.isChecked() && !moderate.isChecked() && !expensive.isChecked()) {
+                    Toast.makeText(getApplication().getBaseContext(), "Please select at least one option!",
+                            Toast.LENGTH_LONG).show();
+                }
                 data.put("inexpensive", inexpensive.isChecked());
                 updateFirestore();
             }
@@ -178,6 +183,10 @@ public class PreferencesActivity extends AppCompatActivity {
         moderate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (!inexpensive.isChecked() && !moderate.isChecked() && !expensive.isChecked()) {
+                    Toast.makeText(getApplication().getBaseContext(), "Please select at least one option!",
+                            Toast.LENGTH_LONG).show();
+                }
                 data.put("moderate", moderate.isChecked());
                 updateFirestore();
             }
@@ -188,6 +197,10 @@ public class PreferencesActivity extends AppCompatActivity {
         expensive.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (!inexpensive.isChecked() && !moderate.isChecked() && !expensive.isChecked()) {
+                    Toast.makeText(getApplication().getBaseContext(), "Please select at least one option!",
+                            Toast.LENGTH_LONG).show();
+                }
                 data.put("expensive", expensive.isChecked());
                 updateFirestore();
             }
