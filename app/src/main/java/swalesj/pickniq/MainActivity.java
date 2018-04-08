@@ -335,7 +335,9 @@ public class MainActivity extends AppCompatActivity
         placesURL.append("&types=").append(type);
         placesURL.append("&sensor=true");
         placesURL.append("&key=" + "AIzaSyBQE86eAF8UylrcBwy7WQtJLDSUjQAaJLc");
-
+        if (((AppController) getApplication()).getUser().isOpennow()) {
+            placesURL.append("&opennow=true");
+        }
         // determine pricing
         if ((inexpensive && moderate && expensive) ||
                 (inexpensive && !moderate && expensive)) {
@@ -457,28 +459,33 @@ public class MainActivity extends AppCompatActivity
                     snippet = ("Rating: " + rating + "/5 " + "Price: " + price_display);
                     markerOptions.snippet(snippet);
                     currentAdd = Double.toString(latitude) + "," + Double.toString(longitude);
-                    if (Double.parseDouble(rating) > highestRating) {
-                        placeDetails.add(0, snippet);
-                        placeNames.add(0, placeName);
-                        placeLocations.add(0, currentAdd);
-                        highestRating = Double.parseDouble(rating);
-                    } else if (Double.parseDouble(rating) > secondHighestRating) {
-                        placeDetails.add(1, snippet);
-                        placeNames.add(1, placeName);
-                        placeLocations.add(1, currentAdd);
-                        secondHighestRating = Double.parseDouble(rating);
-                    } else if (Double.parseDouble(rating) > thirdHighestRating) {
-                        placeDetails.add(2, snippet);
-                        placeNames.add(2, placeName);
-                        placeLocations.add(2, currentAdd);
-                        thirdHighestRating = Double.parseDouble(rating);
-                    } else {
-                        placeDetails.add(snippet);
-                        placeNames.add(placeName);
-                        placeLocations.add(currentAdd);
+
+                    long minRating = ((AppController) this.getApplication()).getUser().getMinimumRating();
+                    if (Double.parseDouble(rating) >= minRating) {
+                        if (Double.parseDouble(rating) > highestRating) {
+                            placeDetails.add(0, snippet);
+                            placeNames.add(0, placeName);
+                            placeLocations.add(0, currentAdd);
+                            highestRating = Double.parseDouble(rating);
+                        } else if (Double.parseDouble(rating) > secondHighestRating) {
+                            placeDetails.add(1, snippet);
+                            placeNames.add(1, placeName);
+                            placeLocations.add(1, currentAdd);
+                            secondHighestRating = Double.parseDouble(rating);
+                        } else if (Double.parseDouble(rating) > thirdHighestRating) {
+                            placeDetails.add(2, snippet);
+                            placeNames.add(2, placeName);
+                            placeLocations.add(2, currentAdd);
+                            thirdHighestRating = Double.parseDouble(rating);
+                        } else {
+                            placeDetails.add(snippet);
+                            placeNames.add(placeName);
+                            placeLocations.add(currentAdd);
+                        }
+                        googleMap.addMarker(markerOptions).showInfoWindow();
                     }
 
-                    googleMap.addMarker(markerOptions).showInfoWindow();
+
                 }
                 if (placeNames.size() > 0) {
                     location1name.setText(placeNames.get(0));

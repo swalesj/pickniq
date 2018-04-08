@@ -97,6 +97,7 @@ public class User {
         uid = u.getUid();
         name = u.getDisplayName();
         email = u.getEmail();
+        minimumRating = 1;
         preferredRadius = 3;
         // Below lines were an idea for allowing user object to register itself to Firestore DB..
         // Doesn't grab data fast enough.
