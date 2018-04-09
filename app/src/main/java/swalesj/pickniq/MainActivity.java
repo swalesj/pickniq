@@ -85,7 +85,13 @@ public class MainActivity extends AppCompatActivity
                 Snackbar.make(view, "Searching...", Snackbar.LENGTH_SHORT)
                         .setAction("Search", null).show();
                 googleMap.clear();
-                loadNearbyPlaces(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                try {
+                    loadNearbyPlaces(mLastKnownLocation.getLatitude(), mLastKnownLocation.getLongitude());
+                } catch (NullPointerException n) {
+                    Toast.makeText(getApplication().getBaseContext(), "No location data!",
+                            Toast.LENGTH_LONG).show();
+                }
+
                 onMapReady(googleMap);
             }
         });
@@ -491,8 +497,11 @@ public class MainActivity extends AppCompatActivity
                             placeDetails.add(0, snippet);
                             placeNames.add(0, placeName);
                             placeLocations.add(0, currentAdd);
-                                Toast.makeText(getApplication().getBaseContext(), "No results! Try a different search.",
-                                        Toast.LENGTH_LONG).show();
+                            if (snippet.matches("Rating: /5 Price: "));
+                            {
+                                //Toast.makeText(getApplication().getBaseContext(), "No results! Try a different search.",
+                                //        Toast.LENGTH_LONG).show();
+                            }
                             highestRating = Double.parseDouble(rating);
                         } else if (Double.parseDouble(rating) > secondHighestRating) {
                             card2.setVisibility(View.VISIBLE);

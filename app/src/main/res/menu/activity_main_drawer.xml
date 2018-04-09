@@ -7,7 +7,7 @@
         <item
             android:id="@+id/nav_groups"
             android:icon="@drawable/folder"
-            android:title="Groups" />
+            android:title="Friends and Groups" />
         <item
             android:id="@+id/nav_favorites"
             android:icon="@drawable/favorite"
