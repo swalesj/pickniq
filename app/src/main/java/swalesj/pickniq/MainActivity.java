@@ -416,6 +416,10 @@ public class MainActivity extends AppCompatActivity
         placeDetails.clear();
         placeLocations.clear();
 
+        card1.setVisibility(View.GONE);
+        card2.setVisibility(View.GONE);
+        card3.setVisibility(View.GONE);
+
         searchText.setText("Showing the best restaurants according to your preferences:");
 
         try {
@@ -483,16 +487,21 @@ public class MainActivity extends AppCompatActivity
                     long minRating = ((AppController) this.getApplication()).getUser().getMinimumRating();
                     if (Double.parseDouble(rating) >= minRating) {
                         if (Double.parseDouble(rating) > highestRating) {
+                            card1.setVisibility(View.VISIBLE);
                             placeDetails.add(0, snippet);
                             placeNames.add(0, placeName);
                             placeLocations.add(0, currentAdd);
+                                Toast.makeText(getApplication().getBaseContext(), "No results! Try a different search.",
+                                        Toast.LENGTH_LONG).show();
                             highestRating = Double.parseDouble(rating);
                         } else if (Double.parseDouble(rating) > secondHighestRating) {
+                            card2.setVisibility(View.VISIBLE);
                             placeDetails.add(1, snippet);
                             placeNames.add(1, placeName);
                             placeLocations.add(1, currentAdd);
                             secondHighestRating = Double.parseDouble(rating);
                         } else if (Double.parseDouble(rating) > thirdHighestRating) {
+                            card3.setVisibility(View.VISIBLE);
                             placeDetails.add(2, snippet);
                             placeNames.add(2, placeName);
                             placeLocations.add(2, currentAdd);
@@ -510,7 +519,6 @@ public class MainActivity extends AppCompatActivity
                 if (placeNames.size() > 0) {
                     location1name.setText(placeNames.get(0));
                     location1details.setText(placeDetails.get(0));
-
                     card1.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
