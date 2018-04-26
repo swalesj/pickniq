@@ -1,4 +1,4 @@
-package swalesj.pickniq;
+package swalesj.pickniq.Activities;
 
 import android.app.ActionBar;
 import android.support.annotation.NonNull;
@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -18,14 +16,14 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
-import java.util.Map;
+
+import swalesj.pickniq.Application.AppController;
+import swalesj.pickniq.R;
 
 import static java.lang.Math.toIntExact;
 
@@ -98,6 +96,8 @@ public class PreferencesActivity extends AppCompatActivity {
         // minimum_rating.
         long min = (long) data.get("minimum_rating");
         minRating.setProgress(toIntExact(min));
+        ((AppController) this.getApplication()).getUser().setMinimumRating(min);
+        
         // inexpensive.
         Boolean checked = (Boolean) data.get("inexpensive");
         Log.d(TAG, "setFieldsFromFirestore: " + checked);
@@ -116,10 +116,12 @@ public class PreferencesActivity extends AppCompatActivity {
         expensive.setChecked(checked);
         ((AppController) this.getApplication()).getUser().setExpensive(checked);
 
+        // preferred radius.
         long radiusValue = (long) data.get("preferred_radius");
         radius.setProgress(toIntExact(radiusValue));
         ((AppController) this.getApplication()).getUser().setPreferredRadius(radiusValue);
 
+        // open now.
         checked = (Boolean) data.get("open_now");
         opennow.setChecked(checked);
         ((AppController) this.getApplication()).getUser().setOpennow(checked);

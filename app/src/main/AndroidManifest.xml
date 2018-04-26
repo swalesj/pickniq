@@ -13,7 +13,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
-        android:name=".AppController"
+        android:name=".Application.AppController"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -28,7 +28,7 @@
             android:value="@string/google_maps_key" />
 
         <activity
-            android:name=".GoogleSignInActivity"
+            android:name=".Activities.GoogleSignInActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -37,12 +37,15 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
+            android:name=".Activities.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".PreferencesActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name=".Activities.PreferencesActivity"
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity
+            android:name=".Activities.FriendsGroupsActivity"
+            android:parentActivityName=".Activities.MainActivity"></activity>
     </application>
 
 </manifest>

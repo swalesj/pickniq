@@ -1,4 +1,4 @@
-package swalesj.pickniq;
+package swalesj.pickniq.Application;
 
 /**
  * Created by swalesj

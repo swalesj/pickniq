@@ -1,15 +1,13 @@
-package swalesj.pickniq;
+package swalesj.pickniq.Activities;
 
 
 import android.content.Intent;
 
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.support.v7.app.AppCompatActivity;
@@ -29,6 +27,10 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import swalesj.pickniq.Application.AppController;
+import swalesj.pickniq.R;
+import swalesj.pickniq.Data_Classes.User;
 
 /** A login screen that offers login via Google. */
 public class GoogleSignInActivity extends AppCompatActivity implements View.OnClickListener {

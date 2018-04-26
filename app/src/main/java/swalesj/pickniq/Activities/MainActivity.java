@@ -1,4 +1,4 @@
-package swalesj.pickniq;
+package swalesj.pickniq.Activities;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -31,7 +31,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -49,10 +48,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.util.ArrayList;
-import java.util.Collections;
+
+import swalesj.pickniq.Application.AppController;
+import swalesj.pickniq.R;
 
 import static com.google.android.gms.location.LocationServices.getFusedLocationProviderClient;
-import static swalesj.pickniq.AppConfig.*;
+import static swalesj.pickniq.Application.AppConfig.*;
 
 
 public class MainActivity extends AppCompatActivity
@@ -217,6 +218,8 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_groups) {
             // TODO Open group activity to modify user groups
+            Intent launch_friendsAndGroups = new Intent(this, FriendsGroupsActivity.class);
+            startActivity(launch_friendsAndGroups);
         } else if (id == R.id.nav_favorites) {
 
         } else if (id == R.id.nav_prefs) {

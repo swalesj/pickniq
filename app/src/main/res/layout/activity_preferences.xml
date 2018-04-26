@@ -4,121 +4,112 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="swalesj.pickniq.PreferencesActivity">
+    tools:context=".Activities.PreferencesActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="8dp"
-        android:orientation="vertical"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="8dp">
+        android:layout_height="match_parent">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="15dp">
 
-            <LinearLayout
+            <ImageView
+                android:id="@+id/imageView2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="15dp">
+                app:srcCompat="@mipmap/ic_launcher_round" />
 
-                <ImageView
-                    android:id="@+id/imageView2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:srcCompat="@mipmap/ic_launcher_round" />
+            <TextView
+                android:id="@+id/ratingText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Minimum Rating:"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/ratingText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Minimum rating:"
-                    android:textSize="20sp" />
+            <SeekBar
+                android:id="@+id/min_rating"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="4"
+                android:padding="8dp" />
 
-                <SeekBar
-                    android:id="@+id/min_rating"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="4"
-                    android:padding="8dp" />
+            <TextView
+                android:id="@+id/checkedTextView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Price Categories: "
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/checkedTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Price categories: "
-                    android:textSize="20sp" />
+            <CheckBox
+                android:id="@+id/inexpensive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Inexpensive" />
 
-                <CheckBox
-                    android:id="@+id/inexpensive"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Inexpensive" />
+            <CheckBox
+                android:id="@+id/moderate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Moderate" />
 
-                <CheckBox
-                    android:id="@+id/moderate"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Moderate" />
+            <CheckBox
+                android:id="@+id/expensive"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Expensive" />
 
-                <CheckBox
-                    android:id="@+id/expensive"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Expensive" />
+            <TextView
+                android:id="@+id/radiusText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="Search Radius:"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/radiusText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="8dp"
-                    android:text="Search Radius:"
-                    android:textSize="20sp" />
+            <SeekBar
+                android:id="@+id/radius_slider"
+                style="@style/Widget.AppCompat.SeekBar.Discrete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="25"
+                android:padding="8dp" />
 
-                <SeekBar
-                    android:id="@+id/radius_slider"
-                    style="@style/Widget.AppCompat.SeekBar.Discrete"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:max="25"
-                    android:padding="8dp" />
+            <TextView
+                android:id="@+id/openText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="8dp"
+                android:text="Open Now:"
+                android:textSize="20sp" />
 
-                <TextView
-                    android:id="@+id/openText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:padding="8dp"
-                    android:text="Open Now:"
-                    android:textSize="20sp" />
+            <CheckBox
+                android:id="@+id/open"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:text="Open now" />
 
-                <CheckBox
-                    android:id="@+id/open"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="8dp"
-                    android:text="Open now" />
+        </LinearLayout>
 
-            </LinearLayout>
-
-        </ScrollView>
-    </LinearLayout>
+    </ScrollView>
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="20dp" />
+        app:layout_constraintGuide_end="364dp" />
 
     <android.support.constraint.Guideline
         android:id="@+id/guideline2"

@@ -1,4 +1,4 @@
-package swalesj.pickniq;
+package swalesj.pickniq.Data_Classes;
 
 import android.app.Application;
 import android.support.annotation.NonNull;
