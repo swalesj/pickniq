@@ -267,7 +267,12 @@ public class MainActivity extends AppCompatActivity
                                 onLocationChanged(location);
                                 double lat = location.getLatitude();
                                 double lon = location.getLongitude();
-                                loadNearbyPlaces(lat, lon);
+                                try {
+                                    loadNearbyPlaces(lat, lon);
+                                } catch (NullPointerException n) {
+                                    Toast.makeText(getApplication().getBaseContext(), "Error fetching data!",
+                                            Toast.LENGTH_LONG).show();
+                                }
                             }
                         }
                     })
@@ -500,6 +505,8 @@ public class MainActivity extends AppCompatActivity
                             placeDetails.add(0, snippet);
                             placeNames.add(0, placeName);
                             placeLocations.add(0, currentAdd);
+
+                            // TODO Doesn't work properly
                             if (snippet.matches("Rating: /5 Price: "));
                             {
                                 //Toast.makeText(getApplication().getBaseContext(), "No results! Try a different search.",
