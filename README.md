@@ -7,4 +7,3 @@ Pickniq is natively built in Android Studio (Gradle) with user data stored with 
 Contributors:
 * Jarret Swales
 * Gabe Vansolkema
-* Joseph Gravlin
